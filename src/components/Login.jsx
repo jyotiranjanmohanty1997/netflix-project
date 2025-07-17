@@ -1,13 +1,31 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { Eye, EyeOff } from "lucide-react";
+import { checkValidData } from "../utils/Validation";
 
 const Login = () => {
   const [isSignin, setIsSignin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
 
   const toggleSignin = () => {
     setIsSignin(!isSignin);
+  };
+
+  const handleButtonClick = () => {
+    // checkValidData(email, password);
+
+    // Show input Email & password data (it is working in UseRef)
+
+    // console.log(email.current.value);
+    // console.log(password.current.value);
+
+    const message = checkValidData(email.current.value, password.current.value);
+    setErrorMessage(message);
   };
   return (
     <>
@@ -25,13 +43,17 @@ const Login = () => {
 
         {/* Centered Login Form */}
         <div className="relative z-10 flex items-center justify-center h-full">
-          <form className="bg-black bg-opacity-75 p-10 rounded-md max-w-md w-full space-y-6 text-white">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="bg-black bg-opacity-75 p-10 rounded-md max-w-md w-full space-y-6 text-white"
+          >
             <h2 className="text-3xl font-semibold text-center">
               {isSignin ? "Signin" : "Signup"}
             </h2>
 
             {!isSignin && (
               <input
+                ref={name}
                 type="text"
                 placeholder="Username"
                 className="w-full p-3 rounded bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -39,6 +61,7 @@ const Login = () => {
             )}
 
             <input
+              ref={email}
               type="text"
               placeholder="Email"
               className="w-full p-3 rounded bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -52,6 +75,7 @@ const Login = () => {
 
             <div className="relative">
               <input
+                ref={password}
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="w-full p-3 pr-10 rounded bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -64,9 +88,10 @@ const Login = () => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-
+            <p className="text-lg font-semibold text-red-500">{errorMessage}</p>
             <button
               type="submit"
+              onClick={handleButtonClick}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded cursor-pointer"
             >
               {isSignin ? "Signin" : "Signup"}
